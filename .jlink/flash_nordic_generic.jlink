@@ -1,0 +1,6 @@
+speed auto
+Reset
+Halt
+LoadFile nanoCLR.hex
+Reset
+Exit

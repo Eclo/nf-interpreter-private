@@ -7,6 +7,7 @@
         "targets/ESP32/CMakePresets.json",
         "targets/FreeRTOS/CMakePresets.json",
         "targets/TI_SimpleLink/CMakePresets.json",
+        "targets/Nordic/CMakePresets.json",
         "targets-community/CMakePresets.json"
     ]
 }

@@ -21,6 +21,9 @@ config RTOS_TI_SIMPLELINK
 config RTOS_THREADX
     bool "ThreadX"
 
+config RTOS_NORDIC
+    bool "Nordic nRF Connect SDK (Zephyr)"
+
 endchoice
 
 # String variable consumed by CMake
@@ -31,3 +34,4 @@ config RTOS
     default "FreeRTOS"     if RTOS_FREERTOS
     default "TI_SimpleLink" if RTOS_TI_SIMPLELINK
     default "ThreadX"      if RTOS_THREADX
+    default "Nordic"       if RTOS_NORDIC

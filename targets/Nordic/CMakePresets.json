@@ -1,0 +1,7 @@
+{
+    "version": 4,
+    "include": [
+        "NRF52840_DK/CMakePresets.json",
+        "NRF9160_DK/CMakePresets.json"
+    ]
+}

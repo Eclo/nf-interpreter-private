@@ -1,0 +1,46 @@
+# Copyright (c) .NET Foundation and Contributors
+# See LICENSE file in the project root for full license information.
+
+# Prepares the host for building the Nordic (nRF Connect SDK / Zephyr) targets.
+# The nRF Connect SDK sources and the Zephyr SDK toolchain are downloaded by the CMake
+# configure step itself (see targets/Nordic/CMakeLists.txt), so only Python and west are
+# needed here. The downloads are cached to speed up subsequent builds.
+#
+# WHEN CHANGING THE VERSIONS MAKE SURE TO UPDATE:
+# - targets/Nordic/CMakeLists.txt
+# - targets/Nordic/README.md
+
+parameters:
+  - name: ncsVersion
+    type: string
+    default: 'v3.4.1'
+  - name: zephyrSdkVersion
+    type: string
+    default: '1.0.1'
+  - name: depsDirectory
+    type: string
+    default: $(Agent.TempDirectory)/nordic-deps
+
+steps:
+
+  - task: UsePythonVersion@0
+    displayName: Set Python to v3.12
+    inputs:
+      versionSpec: '3.12'
+      addToPath: true
+
+  - task: PowerShell@2
+    displayName: Install west
+    inputs:
+      targetType: 'inline'
+      script: |
+        python -m pip install --quiet west
+
+  - task: Cache@2
+    displayName: Cache nRF Connect SDK and Zephyr SDK
+    inputs:
+      key: 'nordic-deps | ${{ parameters.ncsVersion }} | ${{ parameters.zephyrSdkVersion }} | "$(Agent.OS)"'
+      path: ${{ parameters.depsDirectory }}
+
+  - script: echo "##vso[task.setvariable variable=NF_NORDIC_DEPS_DIR]${{ parameters.depsDirectory }}"
+    displayName: Set Nordic dependencies location

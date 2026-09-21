@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "NRF9160_DK nanoCLR",
+            "type": "cppdbg",
+            "request": "launch",
+            "miDebuggerPath": "<absolute-path-to-the-zephyr-sdk-folder-mind-the-forward-slashes>/gnu/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb.exe",
+            "program": "${workspaceRoot}/build/nanoCLR.elf",
+            "MIMode": "gdb",
+            "debugServerPath": "<absolute-path-to-j-link-gdb-server-path-mind-the-forward-slashes>/JLinkGDBServerCL.exe",
+            "debugServerArgs": "-if swd -speed auto -endian little -device nRF9160_xxAA -localhostonly 1 -timeout 0 -vd -halt -singlerun -strict -nogui",
+            "stopAtEntry": false,
+            "serverStarted": "Connected to target",
+            "cwd": "${cwd}",
+            "setupCommands": [
+              {
+                "text": "file \"${workspaceRoot}/build/nanoCLR.elf\" "
+              },
+              {
+                "text": "target extended-remote localhost:2331"
+              },
+              {
+                "text": "monitor halt"
+              },
+              {
+                "text": "monitor reset"
+              },
+              {
+                "text": "load"
+              }
+            ],
+            "launchCompleteCommand": "None",
+            "logging": {
+              "moduleLoad": false,
+              "trace": true,
+              "engineLogging": false,
+              "programOutput": false,
+              "traceResponse": false,
+              "exceptions": true
+            }
+        }
+    ]
+}

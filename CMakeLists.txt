@@ -108,7 +108,11 @@ endif()
 if(NOT BUILD_VERSION)
     set(BUILD_VERSION 0.0.0.0)
 endif()
-project(nanoFramework VERSION ${BUILD_VERSION} LANGUAGES C CXX ASM)
+# Nordic (Zephyr) builds must call find_package(Zephyr) before project(),
+# so for that platform project() is called from nf_setup_target_build() in the board directory
+if(NOT RTOS_NORDIC_CHECK)
+    project(nanoFramework VERSION ${BUILD_VERSION} LANGUAGES C CXX ASM)
+endif()
 
 set(NANOBOOTER_PROJECT_NAME "nanoBooter")
 set(NANOCLR_PROJECT_NAME "nanoCLR")
@@ -823,6 +827,12 @@ else()
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/targets/${RTOS})
     
     # add TARGET board directory
-    add_subdirectory(${TARGET_BASE_LOCATION})
+    if(RTOS_NORDIC_CHECK)
+        # the Zephyr build system has to be the top-level CMake project,
+        # so the board CMakeLists.txt is processed in this scope instead of as a subdirectory
+        include(${TARGET_BASE_LOCATION}/CMakeLists.txt)
+    else()
+        add_subdirectory(${TARGET_BASE_LOCATION})
+    endif()
 
 endif()

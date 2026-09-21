@@ -1,0 +1,35 @@
+//
+// Copyright (c) .NET Foundation and Contributors
+// Portions Copyright (c) 2021 Nordic Semiconductor ASA
+// See LICENSE file in the project root for full license information.
+//
+
+// UART used by the Wire Protocol (Visual Studio debugger): uart0 is routed to the
+// interface MCU virtual COM port (VCOM0) on all DK revisions. Zephyr's console is on RTT (see prj.conf).
+/ {
+	chosen {
+		nanoframework,wire-uart = &uart0;
+		zephyr,code-partition = &slot0_partition;
+	};
+};
+
+// Flash layout: no MCUboot, so the default dual-slot layout is replaced with
+//   0x00000 - 0x60000  nanoCLR (Zephyr application), 384 KB
+//   0x60000 - 0xF8000  managed code deployment, 608 KB
+//   0xF8000 - 0x100000 storage (unchanged)
+// This must match the block storage map in common/Device_BlockStorage.c
+/delete-node/ &boot_partition;
+/delete-node/ &slot1_partition;
+
+&slot0_partition {
+	reg = <0x00000000 0x00060000>;
+};
+
+&flash0 {
+	partitions {
+		deployment_partition: partition@60000 {
+			label = "nanoclr-deployment";
+			reg = <0x00060000 0x00098000>;
+		};
+	};
+};

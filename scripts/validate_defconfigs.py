@@ -46,6 +46,7 @@ def find_defconfigs(repo_root: str) -> list[str]:
         "targets/TI_SimpleLink/*/defconfig",
         "targets/ThreadX/**/defconfig",
         "targets/ThreadX/**/defconfig_*",
+        "targets/Nordic/*/defconfig",
         "targets-community/ChibiOS/*/defconfig",
         "targets-community/TI_SimpleLink/*/defconfig",
     ]

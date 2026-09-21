@@ -11,7 +11,7 @@
 // size_t is guaranteed by C11/C++11, but some bare-metal toolchains pull it
 // in transitively.  On POSIX hosts (and for any standalone compile) include
 // <stddef.h> explicitly so that PRINTF_T / size_t can be resolved.
-#if defined(PLATFORM_POSIX_HOST) || !defined(__arm__)
+#if defined(PLATFORM_POSIX_HOST) || !defined(__arm__) || defined(__ZEPHYR__)
 #include <stddef.h>
 #endif
 

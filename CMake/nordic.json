@@ -1,0 +1,18 @@
+{
+    "version": 4,
+    "include": [
+        "base.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "nordic-preset",
+            "description": "Preset for Nordic nRF Connect SDK (Zephyr) devices. No CMAKE_TOOLCHAIN_FILE here: the Zephyr build system supplies the toolchain (Zephyr SDK).",
+            "hidden": true,
+            "inherits": "general-preset",
+            "cacheVariables": {
+                "RTOS": "Nordic",
+                "NF_INTEROP_ASSEMBLIES": null
+            }
+        }
+    ]
+}

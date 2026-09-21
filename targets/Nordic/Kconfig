@@ -1,0 +1,16 @@
+#
+# Copyright (c) .NET Foundation and Contributors
+# See LICENSE file in the project root for full license information.
+#
+
+menu "Nordic nRF Connect SDK (Zephyr) Platform"
+    depends on RTOS_NORDIC
+
+config NORDIC_ZEPHYR_BOARD
+    string "Zephyr board identifier"
+    help
+      Zephyr board target passed to the Zephyr build system as BOARD,
+      in hardware model v2 form (board/soc/variant), e.g.
+      "nrf52840dk/nrf52840" or "nrf9160dk/nrf9160/ns".
+
+endmenu
