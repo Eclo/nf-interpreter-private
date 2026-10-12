@@ -3,8 +3,9 @@
 // See LICENSE file in the project root for full license information.
 //
 
-// WiFi-aware lwIP thread header for ChibiOS + CYW43.
-// Replaces nf_lwipthread.h when using WiFi instead of Ethernet MAC.
+// WiFi-aware lwIP thread header for ChibiOS.
+// Replaces nf_lwipthread.h when using a WiFi chip instead of ChibiOS Ethernet MAC.
+// The API below is driver neutral; the WiFi driver backend (CYW43, WHD, ...) is selected at build time.
 
 #ifndef NF_LWIPTHREAD_WIFI_H
 #define NF_LWIPTHREAD_WIFI_H
@@ -13,34 +14,34 @@
 
 // Re-export the standard lwIP thread types and API.
 // The WiFi variant uses the same lwipthread_opts_t and API,
-// but the underlying transport uses CYW43 instead of ETHD1 MAC.
+// but the underlying transport is the WiFi driver instead of ETHD1 MAC.
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-    // WiFi-specific initialization — powers on CYW43 and configures the driver
-    void cyw43_wifi_power_on(void);
-    void cyw43_wifi_power_off(void);
+    // WiFi power management
+    void nf_wifi_power_on(void);
+    void nf_wifi_power_off(void);
 
     // Lazy hardware init — call before any WiFi operation
-    int cyw43_ensure_wifi_up_impl(void);
+    int nf_wifi_ensure_up(void);
 
     // WiFi connection management — called from Target_Network.cpp
-    int cyw43_wifi_connect(const char *ssid, const char *password, uint32_t auth_type);
-    int cyw43_wifi_disconnect(void);
-    int cyw43_wifi_scan_start(void);
-    int cyw43_wifi_is_connected(void);
-    int cyw43_wifi_get_link_status(void);
-    int cyw43_wifi_get_join_state(void);
-    uint32_t cyw43_wifi_get_ip4_address(void);
+    int nf_wifi_connect(const char *ssid, const char *password, uint32_t auth_type);
+    int nf_wifi_disconnect(void);
+    int nf_wifi_scan_start(void);
+    int nf_wifi_is_connected(void);
+    int nf_wifi_get_link_status(void);
+    int nf_wifi_get_join_state(void);
+    uint32_t nf_wifi_get_ip4_address(void);
 
-    // Direct poll — call from NativeConnect wait loop to drain SPI packets
-    uint32_t cyw43_wifi_direct_poll(void);
+    // Direct poll — call from NativeConnect wait loop to drain pending packets
+    uint32_t nf_wifi_direct_poll(void);
 
-    // Set the lwIP netif MAC address (call after CYW43 chip is initialized)
-    void cyw43_wifi_set_netif_mac(const uint8_t *mac);
+    // Set the lwIP netif MAC address (call after WiFi chip is initialized)
+    void nf_wifi_set_netif_mac(const uint8_t *mac);
 
     // Scan results
     typedef struct
@@ -52,11 +53,11 @@ extern "C"
         uint16_t channel;
     } wifi_scan_record_t;
 
-    int cyw43_wifi_scan_get_count(void);
-    const wifi_scan_record_t *cyw43_wifi_scan_get_results(void);
+    int nf_wifi_scan_get_count(void);
+    const wifi_scan_record_t *nf_wifi_scan_get_results(void);
 
-    // Access CYW43 MAC address (read from OTP on chip)
-    void cyw43_wifi_get_mac_addr(uint8_t *mac);
+    // Access WiFi MAC address (as set on the netif)
+    void nf_wifi_get_mac_addr(uint8_t *mac);
 
     // Accessor for the WiFi netif
     struct netif *nf_getNetif(void);

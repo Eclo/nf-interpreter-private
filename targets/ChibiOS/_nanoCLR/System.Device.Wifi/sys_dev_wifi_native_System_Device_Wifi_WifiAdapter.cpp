@@ -146,8 +146,8 @@ HRESULT Library_sys_dev_wifi_native_System_Device_Wifi_WifiAdapter::
             }
 
 #if !defined(TARGET_HAS_WIFI_ISM43362)
-            // Do a direct SPI poll from this thread context to help drain packets
-            cyw43_wifi_direct_poll();
+            // Do a direct poll from this thread context to help drain packets
+            nf_wifi_direct_poll();
 #endif
 
             // Wait for Event_Wifi_Station OR 500ms poll timeout
@@ -244,8 +244,8 @@ HRESULT Library_sys_dev_wifi_native_System_Device_Wifi_WifiAdapter::GetNativeSca
         }
         uint16_t number = apList.count;
 #else
-        uint16_t number = (uint16_t)cyw43_wifi_scan_get_count();
-        const wifi_scan_record_t *results = cyw43_wifi_scan_get_results();
+        uint16_t number = (uint16_t)nf_wifi_scan_get_count();
+        const wifi_scan_record_t *results = nf_wifi_scan_get_results();
 #endif
 
         if (number == 0)

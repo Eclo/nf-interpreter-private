@@ -6,7 +6,7 @@
 include(binutils.common)
 include(binutils.ChibiOS)
 
-if(TARGET_HAS_WIFI)
+if(TARGET_WIFI_DRIVER_ISM43362)
     set(TARGET_HAS_WIFI_ISM43362 TRUE)
 
     add_compile_definitions(TARGET_HAS_WIFI_ISM43362)

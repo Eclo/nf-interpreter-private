@@ -27,7 +27,7 @@ bool InitialiseNetworkDefaultConfig(HAL_Configuration_NetworkInterface *pconfig,
     pconfig->SpecificConfigId = 0;
 
     // MAC address will be read from the CYW43 chip at runtime;
-    // leave as zeros here — targetHAL_Network.cpp fills it in from cyw43_wifi_get_mac_addr().
+    // leave as zeros here — targetHAL_Network.cpp fills it in from nf_wifi_get_mac_addr().
 
     return true;
 }

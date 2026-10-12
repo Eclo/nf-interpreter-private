@@ -8,7 +8,7 @@
 #include <nanoHAL.h>
 #include <nanoCLR_Types.h>
 
-#if defined(RP2040) || defined(RP2350)
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
 extern "C"
 {
 #include <nf_lwipthread_wifi.h>
@@ -73,10 +73,10 @@ void nanoHAL_Network_Initialize()
         // init config
         memset(&lwipOptions, 0, sizeof(lwipOptions));
 
-#if defined(RP2040) || defined(RP2350)
-        // WiFi targets: use CYW43 chip MAC if available
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
+        // WiFi targets: use WiFi chip MAC if available
         uint8_t wifiMac[6];
-        cyw43_wifi_get_mac_addr(wifiMac);
+        nf_wifi_get_mac_addr(wifiMac);
 
         if (wifiMac[0] != 0 || wifiMac[1] != 0 || wifiMac[2] != 0)
         {
@@ -128,16 +128,16 @@ void nanoHAL_Network_Initialize()
         // Start lwIP thread in ChibiOS bindings using the above options
         lwIPInit(&lwipOptions);
 
-#if defined(RP2040) || defined(RP2350)
-        // Ensure CYW43 WiFi is powered on and set netif MAC from chip
-        cyw43_ensure_wifi_up_impl();
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
+        // Ensure WiFi is powered on and set netif MAC from chip
+        nf_wifi_ensure_up();
 
         {
             uint8_t chipMac[6];
-            cyw43_wifi_get_mac_addr(chipMac);
+            nf_wifi_get_mac_addr(chipMac);
             if (chipMac[0] != 0 || chipMac[1] != 0 || chipMac[2] != 0)
             {
-                cyw43_wifi_set_netif_mac(chipMac);
+                nf_wifi_set_netif_mac(chipMac);
             }
         }
 #endif
@@ -148,7 +148,7 @@ void nanoHAL_Network_Initialize()
 
 void nanoHAL_Network_Uninitialize()
 {
-#if defined(RP2040) || defined(RP2350)
-    cyw43_wifi_power_off();
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
+    nf_wifi_power_off();
 #endif
 }

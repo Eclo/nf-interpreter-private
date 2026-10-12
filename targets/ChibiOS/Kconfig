@@ -18,4 +18,20 @@ config STM32_CUBE_PACKAGE_REQUIRED
     bool "STM32 Cube package required"
     default n
 
+choice TARGET_WIFI_DRIVER
+    prompt "WiFi driver"
+    depends on TARGET_HAS_WIFI
+    default TARGET_WIFI_DRIVER_CYW43
+
+config TARGET_WIFI_DRIVER_CYW43
+    bool "CYW43 (cyw43-driver, Pico W)"
+
+config TARGET_WIFI_DRIVER_ISM43362
+    bool "Inventek ISM43362 (eS-WiFi module with onboard TCP/IP stack)"
+
+config TARGET_WIFI_DRIVER_WHD
+    bool "Infineon WHD (Wi-Fi Host Driver, BCM43362 over SDIO)"
+
+endchoice
+
 endmenu

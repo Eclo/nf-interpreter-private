@@ -17,7 +17,7 @@ set(CYW43_DRIVER_SRCS
 )
 # Note: cyw43_spi.c is intentionally excluded — our cyw43_bus_pio_spi.c
 # provides all SPI protocol functions (half-duplex PIO, not full-duplex).
-# Note: cyw43_lwip.c is intentionally excluded — nf_lwipthread_wifi.c provides
+# Note: cyw43_lwip.c is intentionally excluded — nf_lwipthread_wifi.c + nf_wifi_cyw43.c provide
 # the lwIP integration with nanoFramework-specific network interface management.
 
 set(CYW43_DRIVER_INCLUDE_DIRS "")
@@ -54,6 +54,7 @@ endforeach()
 # Add the ChibiOS PIO SPI bus driver (our implementation)
 list(APPEND CYW43_DRIVER_SOURCES ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/cyw43/cyw43_bus_pio_spi.c)
 list(APPEND CYW43_DRIVER_SOURCES ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/cyw43/cyw43_arch_chibios.c)
+list(APPEND CYW43_DRIVER_SOURCES ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/cyw43/nf_wifi_cyw43.c)
 
 include(FindPackageHandleStandardArgs)
 

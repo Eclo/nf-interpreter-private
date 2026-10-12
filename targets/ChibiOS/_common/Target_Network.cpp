@@ -8,7 +8,7 @@
 #include <lwip/netifapi.h>
 #include <lwip/dns.h>
 
-#if defined(RP2040) || defined(RP2350)
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
 extern "C"
 {
 #include <nf_lwipthread_wifi.h>
@@ -77,8 +77,8 @@ bool Network_Interface_Close(int index)
     switch (index)
     {
         case 0:
-#if defined(RP2040) || defined(RP2350)
-            cyw43_wifi_disconnect();
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
+            nf_wifi_disconnect();
 #elif defined(TARGET_HAS_WIFI_ISM43362)
             WIFI_Disconnect();
 #else
@@ -89,12 +89,12 @@ bool Network_Interface_Close(int index)
     return false;
 }
 
-#if defined(RP2040) || defined(RP2350)
+#if CONFIG_TARGET_WIFI_DRIVER_CYW43 || CONFIG_TARGET_WIFI_DRIVER_WHD
 
 int Network_Interface_Disconnect(int index)
 {
     (void)index;
-    return cyw43_wifi_disconnect();
+    return nf_wifi_disconnect();
 }
 
 int Network_Interface_Start_Connect(int index, const char *ssid, const char *passphrase, int options)
@@ -108,15 +108,15 @@ int Network_Interface_Start_Connect(int index, const char *ssid, const char *pas
         auth_type = 0x00400004; // WPA2_AES_PSK
     }
 
-    return cyw43_wifi_connect(ssid, passphrase, auth_type);
+    return nf_wifi_connect(ssid, passphrase, auth_type);
 }
 
 int Network_Interface_Connect_Result(int configIndex)
 {
-    if (!cyw43_wifi_is_connected())
+    if (!nf_wifi_is_connected())
         return -1;
 
-    if (cyw43_wifi_get_ip4_address() == 0)
+    if (nf_wifi_get_ip4_address() == 0)
         return -1;
 
     // DHCP has completed — sync the live netif values (IP, gateway, netmask,
@@ -153,7 +153,7 @@ int Network_Interface_Start_Scan(int index)
 {
     (void)index;
 
-    cyw43_wifi_scan_start();
+    nf_wifi_scan_start();
     return 0;
 }
 
