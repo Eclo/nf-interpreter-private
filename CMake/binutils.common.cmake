@@ -878,6 +878,62 @@ function(nf_add_lwip_library)
 
 endfunction()
 
+# Infineon Wi-Fi Host Driver (WHD) for WiFi targets with Broadcom/Cypress FullMAC chips over SDIO (e.g. MXCHIP AZ3166)
+function(nf_add_whd_driver_library)
+
+    # check if WHD_DRIVER_SOURCE was specified or if it's empty (default is empty)
+    set(NO_WHD_SOURCE TRUE)
+
+    if(WHD_DRIVER_SOURCE)
+        if(NOT ${WHD_DRIVER_SOURCE} STREQUAL "")
+            set(NO_WHD_SOURCE FALSE)
+        endif()
+    endif()
+
+    # set tag for currently supported version (v3.x sources are Apache-2.0)
+    set(WHD_DRIVER_GIT_TAG "release-v3.2.0")
+
+    if(NO_WHD_SOURCE)
+        # no WHD source specified, download it from its repo
+        message(STATUS "WHD driver ${WHD_DRIVER_GIT_TAG} from GitHub repo")
+
+        FetchContent_Declare(
+            whd_driver
+            GIT_REPOSITORY https://github.com/Infineon/wifi-host-driver.git
+            GIT_TAG ${WHD_DRIVER_GIT_TAG}
+            GIT_SHALLOW TRUE
+            GIT_CONFIG "core.fileMode=false"
+            UPDATE_DISCONNECTED ON
+            PATCH_COMMAND ${CMAKE_COMMAND} -DWHD_SOURCE_DIR=<SOURCE_DIR> -P ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/whd/whd_patch.cmake
+        )
+
+    else()
+        # WHD source was specified
+        message(STATUS "WHD driver (source from: ${WHD_DRIVER_SOURCE})")
+
+        FetchContent_Declare(
+            whd_driver
+            SOURCE_DIR ${WHD_DRIVER_SOURCE}
+        )
+
+    endif()
+
+    # Check if population has already been performed
+    FetchContent_GetProperties(whd_driver)
+
+    if(NOT whd_driver_POPULATED)
+        FetchContent_MakeAvailable(whd_driver)
+    endif()
+
+    # local sources aren't patched by FetchContent, apply the (idempotent) patch here
+    if(NOT NO_WHD_SOURCE)
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -DWHD_SOURCE_DIR=${whd_driver_SOURCE_DIR} -P ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/whd/whd_patch.cmake
+        )
+    endif()
+
+endfunction()
+
 # CYW43 driver for WiFi targets (Pico W, etc.)
 function(nf_add_cyw43_driver_library)
 
