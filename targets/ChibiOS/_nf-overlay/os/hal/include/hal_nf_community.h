@@ -35,6 +35,11 @@
 #define HAL_NF_USE_STM32_QSPI FALSE
 #endif
 
+#if !defined(HAL_NF_USE_STM32_SDIO)
+// the default for this driver is NOT to be included
+#define HAL_NF_USE_STM32_SDIO FALSE
+#endif
+
 #if !defined(HAL_USE_USBH)
 // the default for this driver is NOT to be included
 #define HAL_USE_USBH FALSE
@@ -55,6 +60,7 @@
 #include "stm32_rng/hal_stm32_rng.h"
 #include "stm32_fsmc/hal_stm32_fsmc.h"
 #include "stm32_onewire/hal_stm32_onewire.h"
+#include "stm32_sdio/hal_stm32_sdio.h"
 #elif defined(RP2040) || defined(RP2350)
 #include "rp_rng/hal_rp_rng.h"
 #endif

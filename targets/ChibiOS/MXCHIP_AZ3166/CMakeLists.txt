@@ -37,13 +37,13 @@ if(SRECORD_TOOL_AVAILABLE)
         nf_generate_bin_package(
             ${CMAKE_SOURCE_DIR}/build/${NANOBOOTER_PROJECT_NAME}.bin
             ${CMAKE_SOURCE_DIR}/build/${NANOCLR_PROJECT_NAME}.bin
-            8000
+            10000
             ${CMAKE_SOURCE_DIR}/build/nanobooter-nanoclr.bin)
     else()
         nf_generate_bin_package(
             ${CMAKE_SOURCE_DIR}/build/${NANOBOOTER_PROJECT_NAME}.bin
             ${CMAKE_SOURCE_DIR}/build/${NANOCLR_PROJECT_NAME}.bin
-            8000
+            10000
             ${CMAKE_SOURCE_DIR}/build/nanobooter-nanoclr.bin)
     endif()
 

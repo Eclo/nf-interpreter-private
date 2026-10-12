@@ -24,6 +24,8 @@ if(TARGET_VENDOR STREQUAL "ST")
     list(APPEND ChibiOSnfOverlay_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/include/stm32_onewire)
     # component STM32_QSPI (QSPI driver)
     list(APPEND ChibiOSnfOverlay_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/include/stm32_qspi)
+    # component STM32_SDIO (SD I/O card host driver)
+    list(APPEND ChibiOSnfOverlay_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/include/stm32_sdio)
 endif()
 
 # RP-specific overlay components
@@ -67,6 +69,8 @@ if(TARGET_VENDOR STREQUAL "ST")
     list(APPEND ChibiOSnfOverlay_SOURCES ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/src/stm32_onewire/hal_stm32_onewire.c)
     # component STM32_QSPI (QSPI driver)
     list(APPEND ChibiOSnfOverlay_SOURCES ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/src/stm32_qspi/hal_stm32_qspi.c)
+    # component STM32_SDIO (SD I/O card host driver)
+    list(APPEND ChibiOSnfOverlay_SOURCES ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/src/stm32_sdio/hal_stm32_sdio.c)
 endif()
 
 # RP-specific overlay sources

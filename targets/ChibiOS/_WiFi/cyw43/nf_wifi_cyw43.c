@@ -189,8 +189,8 @@ int nf_wifi_connect(const char *ssid, const char *password, uint32_t auth_type)
     cyw43_wifi_pm(state, CYW43_NONE_PM);
 
     CYW43_THREAD_ENTER;
-    int result = cyw43_wifi_join(state, ssid_len, (const uint8_t *)ssid, key_len, (const uint8_t *)password, auth, NULL,
-                                 0);
+    int result =
+        cyw43_wifi_join(state, ssid_len, (const uint8_t *)ssid, key_len, (const uint8_t *)password, auth, NULL, 0);
     CYW43_THREAD_EXIT;
 
     // After successful join, issue an ioctl to kick inline packet processing.

@@ -65,4 +65,8 @@ void halCommunityInit(void)
 #if (HAL_NF_USE_STM32_QSPI == TRUE)
     qspiInit();
 #endif
+
+#if (HAL_NF_USE_STM32_SDIO == TRUE)
+    sdioInit();
+#endif
 }

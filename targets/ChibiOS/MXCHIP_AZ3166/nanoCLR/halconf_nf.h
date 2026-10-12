@@ -15,4 +15,9 @@
 #define HAL_NF_USE_RNG TRUE
 #endif
 
+// SDIO host for the WLAN chip (BCM43362)
+#if !defined(HAL_NF_USE_STM32_SDIO)
+#define HAL_NF_USE_STM32_SDIO TRUE
+#endif
+
 #endif // HALCONF_NF_H
