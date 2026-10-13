@@ -152,6 +152,12 @@ static void sdio_lld_collect_errors(SDIODriver *sdiop, uint32_t sta)
     sdiop->errors |= errors;
 }
 
+// DCTRL value with the data path idle: SDIOEN is required for the card interrupt (DAT1) to be detected.
+static inline uint32_t sdio_lld_idle_dctrl(SDIODriver *sdiop)
+{
+    return ((sdiop->sdio->MASK & SDIO_MASK_SDIOITIE) != 0U) ? SDIO_DCTRL_SDIOEN : 0U;
+}
+
 // Stops the data path and DMA after a failed transfer.
 static void sdio_lld_data_error_cleanup(SDIODriver *sdiop)
 {
@@ -164,7 +170,7 @@ static void sdio_lld_data_error_cleanup(SDIODriver *sdiop)
     osalSysUnlock();
 
     sta = sdiop->sdio->STA;
-    sdiop->sdio->DCTRL = 0U;
+    sdiop->sdio->DCTRL = sdio_lld_idle_dctrl(sdiop);
     sdiop->sdio->ICR = sta & SDIO_NF_STA_DATA_FLAGS;
 
     sdio_lld_collect_errors(sdiop, sta);
@@ -501,7 +507,7 @@ bool sdio_lld_transfer(
     // wait for transfer completion at DMA level, the stream is then disabled and cleared
     dmaWaitCompletion(sdiop->dma);
 
-    sdiop->sdio->DCTRL = 0U;
+    sdiop->sdio->DCTRL = sdio_lld_idle_dctrl(sdiop);
     sdiop->sdio->ICR = SDIO_NF_STA_DATA_FLAGS;
 
     return HAL_SUCCESS;
@@ -514,6 +520,12 @@ void sdio_lld_enable_card_interrupt(SDIODriver *sdiop, bool enable)
     if (enable)
     {
         sdiop->sdio->MASK |= SDIO_MASK_SDIOITIE;
+
+        // the card interrupt is only detected with SDIOEN set (no effect on the data path while DTEN is clear)
+        if ((sdiop->sdio->DCTRL & SDIO_DCTRL_DTEN) == 0U)
+        {
+            sdiop->sdio->DCTRL = SDIO_DCTRL_SDIOEN;
+        }
     }
     else
     {

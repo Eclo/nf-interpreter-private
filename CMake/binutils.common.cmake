@@ -925,12 +925,11 @@ function(nf_add_whd_driver_library)
         FetchContent_MakeAvailable(whd_driver)
     endif()
 
-    # local sources aren't patched by FetchContent, apply the (idempotent) patch here
-    if(NOT NO_WHD_SOURCE)
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -DWHD_SOURCE_DIR=${whd_driver_SOURCE_DIR} -P ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/whd/whd_patch.cmake
-        )
-    endif()
+    # (re)apply the patch on every configure: covers local sources (not patched by FetchContent)
+    # and sources populated before the patch script was updated
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -DWHD_SOURCE_DIR=${whd_driver_SOURCE_DIR} -P ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_WiFi/whd/whd_patch.cmake
+    )
 
 endfunction()
 
