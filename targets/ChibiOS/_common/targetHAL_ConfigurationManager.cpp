@@ -242,7 +242,7 @@ __nfweak bool ConfigurationManager_GetConfigurationBlock(
         sizeOfBlock = offsetof(HAL_Configuration_X509CaRootBundle, Certificate);
         sizeOfBlock += ((HAL_Configuration_X509CaRootBundle *)blockAddress)->CertificateSize;
     }
-    else if (configuration == DeviceConfigurationOption_X509CaRootBundle)
+    else if (configuration == DeviceConfigurationOption_X509DeviceCertificates)
     {
         if (g_TargetConfiguration.DeviceCertificates->Count == 0 ||
             (configurationIndex + 1) > g_TargetConfiguration.DeviceCertificates->Count)
@@ -258,6 +258,12 @@ __nfweak bool ConfigurationManager_GetConfigurationBlock(
         sizeOfBlock = offsetof(HAL_Configuration_X509DeviceCertificate, Certificate);
         sizeOfBlock += ((HAL_Configuration_X509DeviceCertificate *)blockAddress)->CertificateSize;
     }
+    else
+    {
+        // configuration option not supported
+        return FALSE;
+    }
+
     // copy the config block content to the pointer in the argument
     memcpy(configurationBlock, blockAddress, sizeOfBlock);
 
@@ -480,6 +486,13 @@ __nfweak bool ConfigurationManager_StoreConfigurationBlock(
 
         // for save all the block size has to be provided, check that
         if (blockSize == 0)
+        {
+            return FALSE;
+        }
+
+        // sanity check: the chunk has to fit in the configuration sector
+        if (offset >= ((uint32_t)&__nanoConfig_end__ - (uint32_t)&__nanoConfig_start__) ||
+            blockSize > ((uint32_t)&__nanoConfig_end__ - storageAddress))
         {
             return FALSE;
         }
