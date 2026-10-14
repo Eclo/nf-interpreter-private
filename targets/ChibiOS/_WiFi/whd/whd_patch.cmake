@@ -62,6 +62,33 @@ if(NOT RESET_INSTR_FOUND EQUAL -1)
 endif()
 
 #######################################################################################
+# Join: reading the MFP (802.11w) iovar is fatal upstream, but older firmware (e.g. the BCM43362
+# 5.90.x) doesn't support it, so every secured join failed. Keep MFP disabled when the read fails,
+# as upstream already does a few lines below when setting it.
+#######################################################################################
+set(WIFI_API_FILE ${WHD_SOURCE_DIR}/WiFi_Host_Driver/src/whd_wifi_api.c)
+
+file(READ ${WIFI_API_FILE} WIFI_API_CONTENT)
+
+set(MFP_GET_ORIGINAL "CHECK_RETURN(whd_wifi_get_iovar_value(ifp, IOVAR_STR_MFP, &auth_mfp) );")
+
+string(FIND "${WIFI_API_CONTENT}" "${MFP_GET_ORIGINAL}" MFP_GET_FOUND)
+
+if(NOT MFP_GET_FOUND EQUAL -1)
+
+    string(REPLACE
+        "${MFP_GET_ORIGINAL}"
+        "if (whd_wifi_get_iovar_value(ifp, IOVAR_STR_MFP, &auth_mfp) != WHD_SUCCESS) { auth_mfp = WL_MFP_NONE; }"
+        WIFI_API_CONTENT
+        "${WIFI_API_CONTENT}")
+
+    file(WRITE ${WIFI_API_FILE} "${WIFI_API_CONTENT}")
+
+    message(STATUS "WHD: MFP iovar read made optional in join")
+
+endif()
+
+#######################################################################################
 # Remove the placeholder port headers shipped with WHD: they are included with quotes
 # from their sibling headers, so they would shadow the ChibiOS port ones (_WiFi/whd/port).
 #######################################################################################
