@@ -17,7 +17,9 @@ const BlockRange BlockRange1[] = {
     // in nanoBooter so the configuration can be managed when in booter mode
     ///////////////////////////////////////////////////////////////////////////////////////
     // 0x08008000 configuration block
-    {BlockRange_BLOCKTYPE_CONFIG, 2, 3}};
+    {BlockRange_BLOCKTYPE_CONFIG, 2, 2},
+    // 0x0800C000 nanoCLR
+    {BlockRange_BLOCKTYPE_CODE, 3, 3}};
 
 // 64kB blocks
 const BlockRange BlockRange2[] = {

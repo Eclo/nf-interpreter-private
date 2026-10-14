@@ -20,7 +20,7 @@ MEMORY
     flash5     (rx) : org = 0x00000000, len = 0
     flash6     (rx) : org = 0x00000000, len = 0
     flash7     (rx) : org = 0x00000000, len = 0
-    config     (rw) : org = 0x08008000, len = 32k     /* space reserved for configuration block */
+    config     (rw) : org = 0x08008000, len = 16k     /* space reserved for configuration block (3rd sector 0x08008000 to 0x0800BFFF) */
     deployment (rx) : org = 0x00000000, len = 0       /* space reserved for application deployment */
     ramvt      (wx) : org = 0x00000000, len = 0       /* initial RAM address is reserved for a copy of the vector table */
     ram0       (wx) : org = 0x20000030, len = 256k-48 /* SRAM1 (excludes boot clipboard) */
