@@ -90,6 +90,9 @@ foreach(SRC_FILE ${WHD_PORT_SRCS})
     list(APPEND WHD_DRIVER_SOURCES ${WHD_PORT_DIR}/${SRC_FILE})
 endforeach()
 
+# relax warnings for the WHD sources (third party, we can't modify them)
+set_source_files_properties(${WHD_DRIVER_THIRD_PARTY_SOURCES} PROPERTIES COMPILE_OPTIONS "-w")
+
 set(WHD_DRIVER_DEFINITIONS
     # bus interface: SDIO (CYBSP_SDIO_INTERFACE)
     -DCYBSP_WIFI_INTERFACE_TYPE=0

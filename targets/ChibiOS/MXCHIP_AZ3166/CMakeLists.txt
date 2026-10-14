@@ -6,6 +6,23 @@
 include(binutils.common)
 include(binutils.ChibiOS)
 
+# WiFi: BCM43362 on SDIO through the Infineon Wi-Fi Host Driver (WHD)
+if(USE_NETWORKING_OPTION AND TARGET_WIFI_DRIVER_WHD)
+
+    find_package(WHD_Driver REQUIRED QUIET)
+
+    list(APPEND TARGET_CHIBIOS_NANOCLR_INCLUDE_DIRS ${WHD_DRIVER_INCLUDE_DIRS})
+    list(APPEND TARGET_CHIBIOS_NANOCLR_SOURCES ${WHD_DRIVER_SOURCES})
+
+    # WLAN platform definition, firmware and NVRAM
+    list(APPEND TARGET_CHIBIOS_NANOCLR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/target_wifi_whd_platform.c)
+    list(APPEND TARGET_CHIBIOS_NANOCLR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/common/43362A2_bin.c)
+    list(APPEND TARGET_CHIBIOS_NANOCLR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/common/43362_nvram.c)
+
+    set(TARGET_WIFI_COMPILE_DEFINITIONS ${WHD_DRIVER_DEFINITIONS})
+
+endif()
+
 nf_setup_target_build(
     HAS_NANOBOOTER
 
@@ -17,12 +34,13 @@ nf_setup_target_build(
 
     CLR_EXTRA_COMPILE_DEFINITIONS
         -DRUNTIME_MEMORY_PROFILE__extrasmall=1
+        ${TARGET_WIFI_COMPILE_DEFINITIONS}
    
     BOOTER_EXTRA_LINKMAP_PROPERTIES
         ",--library-path=${CMAKE_SOURCE_DIR}/targets/ChibiOS/_common,--defsym=__main_stack_size__=0x400,--defsym=__process_stack_size__=0x400,--defsym=__crt_heap_size__=0x1000"
 
     CLR_EXTRA_LINKMAP_PROPERTIES
-        ",--library-path=${CMAKE_SOURCE_DIR}/targets/ChibiOS/_common,--defsym=__main_stack_size__=0x400,--defsym=__process_stack_size__=0x800,--defsym=__crt_heap_size__=0x2800"
+        ",--library-path=${CMAKE_SOURCE_DIR}/targets/ChibiOS/_common,--defsym=__main_stack_size__=0x400,--defsym=__process_stack_size__=0x800,--defsym=__crt_heap_size__=0x6000"
 )
 
 # generate bin file for deployment

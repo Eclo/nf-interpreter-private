@@ -253,9 +253,12 @@ if(USE_NETWORKING_OPTION)
 
     nf_add_lwip_library()
 
-    # if this is a WiFi target using the CYW43 driver (e.g. Pico W), also fetch it
     if(TARGET_WIFI_DRIVER_CYW43)
         nf_add_cyw43_driver_library()
+    endif()
+
+    if(TARGET_WIFI_DRIVER_WHD)
+        nf_add_whd_driver_library()
     endif()
 
 endif()

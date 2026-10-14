@@ -11,6 +11,9 @@
 #ifndef TARGET_COMMON_H
 #define TARGET_COMMON_H
 
+#include <target_lwipopts.h>
+#include <nf_lwipopts_sntp.h>
+
 // RAM base address
 #define RAM1_MEMORY_StartAddress ((uint32_t)0x200000C0)
 // RAM size

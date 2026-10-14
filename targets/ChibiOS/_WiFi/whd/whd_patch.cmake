@@ -4,8 +4,6 @@
 #
 
 # Patches the Infineon Wi-Fi Host Driver (WHD) sources after fetching them.
-# Run as: cmake -DWHD_SOURCE_DIR=<path> -P whd_patch.cmake
-# The edits are idempotent and work regardless of the file line endings.
 
 if(NOT WHD_SOURCE_DIR)
     message(FATAL_ERROR "WHD_SOURCE_DIR not set")
@@ -39,3 +37,41 @@ if(ALREADY_PATCHED EQUAL -1)
     message(STATUS "WHD: added BCM43362 core base addresses")
 
 endif()
+
+#######################################################################################
+# SDIO firmware download: take the reset instruction from the first word of the image only.
+# Upstream keeps looking at the following blocks while it reads 0, and then writes it to RAM
+# address 0. The BCM43362 image starts with 0 (CM3 initial stack pointer), so the first word of
+# the second block was written there, corrupting the vector table and preventing the firmware
+# from booting (HT clock timeout).
+#######################################################################################
+set(SDIO_PROTOCOL_FILE ${WHD_SOURCE_DIR}/WiFi_Host_Driver/src/bus_protocols/whd_bus_sdio_protocol.c)
+
+file(READ ${SDIO_PROTOCOL_FILE} SDIO_PROTOCOL_CONTENT)
+
+string(FIND "${SDIO_PROTOCOL_CONTENT}" "if (reset_instr == 0)" RESET_INSTR_FOUND)
+
+if(NOT RESET_INSTR_FOUND EQUAL -1)
+
+    string(REPLACE "if (reset_instr == 0)" "if (i == 0)" SDIO_PROTOCOL_CONTENT "${SDIO_PROTOCOL_CONTENT}")
+
+    file(WRITE ${SDIO_PROTOCOL_FILE} "${SDIO_PROTOCOL_CONTENT}")
+
+    message(STATUS "WHD: fixed reset instruction capture in SDIO firmware download")
+
+endif()
+
+#######################################################################################
+# Remove the placeholder port headers shipped with WHD: they are included with quotes
+# from their sibling headers, so they would shadow the ChibiOS port ones (_WiFi/whd/port).
+#######################################################################################
+foreach(PLACEHOLDER_HEADER
+    External/hal/cyhal_hw_types.h
+    External/rtos/cyabs_rtos_impl.h)
+
+    if(EXISTS ${WHD_SOURCE_DIR}/${PLACEHOLDER_HEADER})
+        file(REMOVE ${WHD_SOURCE_DIR}/${PLACEHOLDER_HEADER})
+        message(STATUS "WHD: removed placeholder ${PLACEHOLDER_HEADER}")
+    endif()
+
+endforeach()
